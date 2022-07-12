@@ -16,3 +16,15 @@ def select_by_letter(letter, df):
       get_col.append(name)
 
   return df[get_col]
+
+def check_na_by_column(df):
+  """Checks each column of dataframe for NA and prints a summary:
+
+  Args:
+      df (object): data frame (pandas)
+  """
+  for i in df.columns:
+    print(f"Column: {i} and null: {df[i].isnull().any()}")
+    
+  return
+

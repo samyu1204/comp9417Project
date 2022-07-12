@@ -12,16 +12,18 @@ def get_sample_sub():
   return dd.read_csv("../data/sample_submission.csv")
 
 def get_test_data():
-  return dd.read_csv("../data/test_data.csv")
+  return pd.read_parquet("../data/test.parquet")
 
 def get_train_data():
   return pd.read_csv("../data/train_data.csv")
 
+# Train labels show if the person defaults or not:
 def get_train_label():
-  return dd.read_csv("../data/train_labels.csv")
+  return pd.read_csv("../data/train_labels.csv")
 
 def get_par_training_data():
   return pd.read_parquet("../data/train.parquet")
+
 
 # * ========================================================================================
 
@@ -30,4 +32,3 @@ def get_par_training_data():
 # get_train_data().head(100)
 # * ========================================================================================
 
-print(get_train_data())
