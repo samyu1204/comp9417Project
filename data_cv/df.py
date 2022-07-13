@@ -1,6 +1,8 @@
 # Using dask here, to work with such a big dataset:
 # pip isntall dask!
 import dask.dataframe as dd
+import pyarrow.parquet as pq
+import datatable as dt
 # Documentations:https://docs.dask.org/en/stable/dataframe.html
 
 import pandas as pd
@@ -22,7 +24,9 @@ def get_train_label():
   return pd.read_csv("../data/train_labels.csv")
 
 def get_par_training_data():
-  return pd.read_parquet("../data/train.parquet")
+  # return dt.fread("../data/train.parquet")
+  return pd.read_feather("../data/train.feather")
+  # return pd.read_parquet("../data/train.parquet")
 
 
 # * ========================================================================================
@@ -32,3 +36,4 @@ def get_par_training_data():
 # get_train_data().head(100)
 # * ========================================================================================
 
+print(get_par_training_data())
