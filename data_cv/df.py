@@ -35,5 +35,3 @@ def get_par_training_data():
 # .head(x) can display x number of rows in the dataframe
 # get_train_data().head(100)
 # * ========================================================================================
-
-print(get_par_training_data())

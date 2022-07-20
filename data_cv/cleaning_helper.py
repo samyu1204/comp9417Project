@@ -28,3 +28,28 @@ def check_na_by_column(df):
     
   return
 
+  # Checking for NA in the data:
+def data_check_NA(data):
+  """Checks for NA in each column and if a column exceeds over 60% NA
+      it will be returned in the list.
+
+  Args:
+      data (dataframe): pandas data frame
+
+  Returns:
+      list: list of all high NA percentage columns
+  """
+  to_remove = []
+  no_rows = 5531451
+  for column in data:
+    count = 0
+    for value in data[column]:
+      if pd.isnull(value):
+        count += 1
+    
+    if (count / no_rows) > 0.6:
+      to_remove.append(column)
+    
+    print(to_remove)
+  return to_remove
+
