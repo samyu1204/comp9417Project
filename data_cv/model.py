@@ -10,7 +10,7 @@ from sklearn.preprocessing import StandardScaler
 import xgboost as xgb
 
 # cov_list = ['customer_ID', 'D_58', 'B_37', 'B_9', 'D_74', 'B_3', 'D_55', 'B_22', 'B_33', 'R_1', 'B_38', 'D_75', 'D_44', 'D_48', 'B_2', 'B_7', 'B_18', 'B_30', 'B_1', 'D_61', 'B_4', 'P_2', 'R_10', 'B_17', 'B_23']
-cov_list = ['customer_ID', 'B_30', 'B_1', 'B_23', 'B_7', 'D_55', 'B_37', 'B_17', 'B_3', 'D_58', 'D_61', 'B_4', 'B_22', 'D_44', 'D_75', 'R_1', 'B_9', 'B_38', 'D_48', 'R_10', 'D_74']
+cov_list = ['customer_ID', 'B_30', 'B_1', 'B_23', 'B_7', 'D_55', 'B_37', 'B_3', 'D_58', 'D_61', 'B_4', 'B_22', 'D_44', 'D_75', 'R_1', 'B_9', 'B_38', 'D_48', 'R_10', 'D_74']
 
 def data_preprocessing():
   data_frame = df.get_train_data()
@@ -18,9 +18,7 @@ def data_preprocessing():
   data = data_frame[cov_list]
 
   # Fill all NA in the dataframe with 0's
-  # data = data.fillna(0)
-  # Checking rows with NA:
-  # cleaning_helper.check_na_by_column(data_S)
+  data = data.fillna(0)
 
   # Group by customer_id and take the average of the columns:
   return data.groupby(['customer_ID']).mean()
@@ -59,8 +57,6 @@ x_train, x_test, y_train, y_test = train_test_split(X, Y, random_state=1)
 # bst = xgb.train(param, dtrain, num_round, evallist)
 
 # ypred = bst.predict(xgb.DMatrix(test_data_process()), iteration_range=(0, bst.best_iteration + 1))
-
-
 
 # LOGISTIC REGRESSION MODEL
 lr_model = LogisticRegression(solver='liblinear', max_iter=200).fit(x_train, y_train)
