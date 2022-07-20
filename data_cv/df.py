@@ -7,7 +7,8 @@ import datatable as dt
 
 import pandas as pd
 # pip install pyarrow
-
+# List of columns that has more than 50% missing values:
+remove_list = ['D_42', 'D_49', 'D_50', 'D_53', 'D_56', 'S_9', 'B_17', 'D_73', 'D_76', 'R_9', 'D_82', 'B_29', 'D_87', 'D_88', 'D_105', 'D_106', 'R_26', 'D_108', 'D_110', 'D_111', 'B_39', 'B_42', 'D_132', 'D_134', 'D_135', 'D_136', 'D_137', 'D_138', 'D_142']
 # * ========================================================================================
 # Data getter functions:
 def get_sample_sub():
@@ -16,18 +17,18 @@ def get_sample_sub():
 def get_test_data():
   return pd.read_parquet("../data/test.parquet")
 
-def get_train_data():
-  return pd.read_csv("../data/train_data.csv")
-
 # Train labels show if the person defaults or not:
 def get_train_label():
   return pd.read_csv("../data/train_labels.csv")
 
-def get_par_training_data():
-  # return dt.fread("../data/train.parquet")
-  return pd.read_feather("../data/train.feather")
+def get_train_data():
+  data = pd.read_feather("../data/train.feather")
+  for i in remove_list:
+    del data[i]
+  return data
   # return pd.read_parquet("../data/train.parquet")
 
+print(get_train_data())
 
 # * ========================================================================================
 

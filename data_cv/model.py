@@ -13,13 +13,12 @@ import xgboost as xgb
 cov_list = ['customer_ID', 'B_30', 'B_1', 'B_23', 'B_7', 'D_55', 'B_37', 'B_17', 'B_3', 'D_58', 'D_61', 'B_4', 'B_22', 'D_44', 'D_75', 'R_1', 'B_9', 'B_38', 'D_48', 'R_10', 'D_74']
 
 def data_preprocessing():
-  data_frame = df.get_par_training_data()
+  data_frame = df.get_train_data()
   # Data analysis for column "s":
   data = data_frame[cov_list]
 
   # Fill all NA in the dataframe with 0's
-  data = data.fillna(0)
-
+  # data = data.fillna(0)
   # Checking rows with NA:
   # cleaning_helper.check_na_by_column(data_S)
 
@@ -36,6 +35,7 @@ def test_data_process():
   return data_avg
 
 X = data_preprocessing()
+
 Y = df.get_train_label()['target'].to_numpy()
 # # Using the training model to fit:
 # model = LogisticRegression(solver='liblinear', random_state=1).fit(X, Y)
@@ -46,30 +46,30 @@ x_train, x_test, y_train, y_test = train_test_split(X, Y, random_state=1)
 
 
 # XGBoost MODEL:
-dtrain = xgb.DMatrix(x_train, label=y_train)
-dtest = xgb.DMatrix(x_test, label=y_test)
+# dtrain = xgb.DMatrix(x_train, label=y_train)
+# dtest = xgb.DMatrix(x_test, label=y_test)
 
-# Paramter spec
-param = {'max_depth': 2, 'eta': 1, 'objective': 'binary:logistic'}
-param['nthread'] = 4
-param['eval_metric'] = 'auc'
+# # Paramter spec
+# param = {'max_depth': 2, 'eta': 1, 'objective': 'binary:logistic'}
+# param['nthread'] = 4
+# param['eval_metric'] = 'auc'
 
-evallist = [(dtest, 'eval'), (dtrain, 'train')]
-num_round = 10
-bst = xgb.train(param, dtrain, num_round, evallist)
+# evallist = [(dtest, 'eval'), (dtrain, 'train')]
+# num_round = 10
+# bst = xgb.train(param, dtrain, num_round, evallist)
 
-ypred = bst.predict(xgb.DMatrix(test_data_process()), iteration_range=(0, bst.best_iteration + 1))
+# ypred = bst.predict(xgb.DMatrix(test_data_process()), iteration_range=(0, bst.best_iteration + 1))
 
 
 
 # LOGISTIC REGRESSION MODEL
-# lr_model = LogisticRegression(solver='liblinear', max_iter=200).fit(x_train, y_train)
-# y_pred = lr_model.predict(x_test)
+lr_model = LogisticRegression(solver='liblinear', max_iter=200).fit(x_train, y_train)
+y_pred = lr_model.predict(x_test)
 
-# print(confusion_matrix(y_test, y_pred))
+print(confusion_matrix(y_test, y_pred))
 
 
 # pd.DataFrame(model.predict_proba(test_data_process())).to_csv(r'solution.csv', index = False)
-pd.DataFrame(pd.DataFrame(ypred).to_csv(r'solution.csv', index = False))
+# pd.DataFrame(pd.DataFrame(ypred).to_csv(r'solution.csv', index = False))
 
 
