@@ -50,7 +50,7 @@ def data_check_NA(data):
       if pd.isnull(value):
         count += 1
     
-    if (count / no_rows) > 0.6:
+    if (count / no_rows) > 0.5:
       to_remove.append(column)
     
     print(to_remove)

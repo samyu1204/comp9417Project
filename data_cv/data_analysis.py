@@ -49,7 +49,7 @@ def info():
 
 # Returns the scaled data:
 def data_preprocessing():
-  data_frame = df.get_par_training_data()
+  data_frame = df.get_train_data()
   # Data analysis for column "s":
   data_S = cleaning_helper.select_by_letter('S', data_frame)
   # Fill all NA in the dataframe with 0's
@@ -73,7 +73,7 @@ def data_preprocessing():
 # Look at all correlation between every variable and return the highest ones
 def get_corr_df():
   highly_correlated = []
-  data_frame = df.get_par_training_data()
+  data_frame = df.get_train_data()
   data_frame = data_frame.groupby(['customer_ID']).mean()
   # Insert the default column:
   data_frame = data_frame.assign(default = df.get_train_label()['target'].tolist())
