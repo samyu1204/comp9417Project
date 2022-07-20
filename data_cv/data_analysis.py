@@ -11,22 +11,6 @@ from sklearn.preprocessing import StandardScaler
 # Returns 5531451 customers here in the training set:
 # print(len(df['customer_ID']))
 
-# Checking for NA in the data:
-def data_check_NA(data):
-  to_remove = []
-  no_rows = 5531451
-  for column in data:
-    count = 0
-    for value in data[column]:
-      if pd.isnull(value):
-        count += 1
-    
-    if (count / no_rows) > 0.6:
-      to_remove.append(column)
-    
-    print(to_remove)
-  return to_remove
-
 # print(c_df.df_sig_columns())
 
 # c_df.df_sig_columns().groupby(['customer_ID'])
@@ -61,13 +45,6 @@ def info():
   # S_25           float32
   # S_26           float32
   # S_27           float32
-
-  # print(data_S.columns)
-  # print(data_S.dtypes)
-  # print(str(data_frame.iloc[1]))
-  # print(str(data_frame.iloc[1][0]) == "0000099d6bd597052cdcda90ffabf56573fe9d7c79be5fbac11a8ed792feb62a")
-
-  # print(data_S['S_27'].isnull().any())
   return 
 
 # Returns the scaled data:
@@ -93,10 +70,40 @@ def data_preprocessing():
 
   return scaled_df.assign(default = df.get_train_label()['target'].tolist())
 
-df = data_preprocessing()
-print(df)
-# Correlation study:
-# print(scaled_df.corr())
+# Look at all correlation between every variable and return the highest ones
+def get_corr_df():
+  highly_correlated = []
+  data_frame = df.get_par_training_data()
+  data_frame = data_frame.groupby(['customer_ID']).mean()
+  # Insert the default column:
+  data_frame = data_frame.assign(default = df.get_train_label()['target'].tolist())
+  corr_df = data_frame.corr()
+  return
+
+# Gives all pair of variables that are strongly correlated:
+def corr_analysis():
+  corr_df = pd.read_csv("../generated_df/correlation_map.csv")
+  # corr_df = corr_df.rename(columns=corr_df.iloc[0])
+  corr_df.set_index('Unnamed: 0', inplace=True)
+  names = corr_df.axes[0].tolist()
+  print(names)
+
+  sig_list = []
+
+  for i in names:
+    index = 0
+    for j in corr_df[i]:
+      if j > 0.5:
+        sig_list.append([i, names[index]])
+      index += 1
+  
+  for i in sig_list:
+    if i[0] == i[1]:
+      sig_list.remove(i)
+  print(sig_list)
+  return sig_list
+
+corr_analysis()
 
 # Examplar model:
 # This model will focus on the columns: S_ 3, 7, 25
@@ -117,12 +124,6 @@ def trial_model():
 
   solution.to_csv(r'solution.csv', index = False)
   return
-
-# print(trial_model())
-
-
-# print(df.get_test_data().head())
-
 
 
 
