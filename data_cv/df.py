@@ -26,10 +26,7 @@ def get_train_data():
   for i in remove_list:
     del data[i]
   return data
-  # return pd.read_parquet("../data/train.parquet")
-
-print(get_train_data())
-
+  
 # * ========================================================================================
 
 # * ========================================================================================
