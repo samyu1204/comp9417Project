@@ -86,24 +86,35 @@ def corr_analysis():
   # corr_df = corr_df.rename(columns=corr_df.iloc[0])
   corr_df.set_index('Unnamed: 0', inplace=True)
   names = corr_df.axes[0].tolist()
-  print(names)
-
   sig_list = []
 
   for i in names:
     index = 0
     for j in corr_df[i]:
-      if j > 0.5:
+      if j > 0.4 or j < -0.4 :
         sig_list.append([i, names[index]])
       index += 1
   
   for i in sig_list:
     if i[0] == i[1]:
       sig_list.remove(i)
-  print(sig_list)
   return sig_list
 
-corr_analysis()
+def get_default_var():
+  corr_list = corr_analysis()
+  var = []
+  for e in corr_list:
+    if e[0] == 'default' and e[1] != 'default':
+      var.append(e[1])
+    elif e[1] == 'default' and e[0] != 'default':
+      var.append(e[0])
+  
+  # Remove duplicates
+  var = list(set(var)) 
+  return var
+
+print(get_default_var())
+
 
 # Examplar model:
 # This model will focus on the columns: S_ 3, 7, 25

@@ -16,6 +16,9 @@ def select_by_letter(letter, df):
       get_col.append(name)
 
   return df[get_col]
+  
+def select_by_list(l, df):
+  return df[l]
 
 def check_na_by_column(df):
   """Checks each column of dataframe for NA and prints a summary:
