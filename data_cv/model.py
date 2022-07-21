@@ -23,7 +23,6 @@ def data_preprocessing():
   # Group by customer_id and take the average of the columns:
   return data.groupby(['customer_ID']).mean()
 
-
 def test_data_process():
   data_frame = df.get_test_data()
   data = data_frame[cov_list]
@@ -42,30 +41,31 @@ Y = df.get_train_label()['target'].to_numpy()
 
 x_train, x_test, y_train, y_test = train_test_split(X, Y, random_state=1)
 
+def XGBoost_model():
+  dtrain = xgb.DMatrix(x_train, label=y_train)
+  dtest = xgb.DMatrix(x_test, label=y_test)
 
-# XGBoost MODEL:
-# dtrain = xgb.DMatrix(x_train, label=y_train)
-# dtest = xgb.DMatrix(x_test, label=y_test)
+  # Paramter spec
+  param = {'max_depth': 2, 'eta': 1, 'objective': 'binary:logistic'}
+  param['nthread'] = 4
+  param['eval_metric'] = 'auc'
 
-# # Paramter spec
-# param = {'max_depth': 2, 'eta': 1, 'objective': 'binary:logistic'}
-# param['nthread'] = 4
-# param['eval_metric'] = 'auc'
+  evallist = [(dtest, 'eval'), (dtrain, 'train')]
+  num_round = 10
+  bst = xgb.train(param, dtrain, num_round, evallist)
 
-# evallist = [(dtest, 'eval'), (dtrain, 'train')]
-# num_round = 10
-# bst = xgb.train(param, dtrain, num_round, evallist)
+  ypred = bst.predict(xgb.DMatrix(test_data_process()), iteration_range=(0, bst.best_iteration + 1))
+  print(ypred)
+  # pd.DataFrame(pd.DataFrame(ypred).to_csv(r'solution.csv', index = False))
 
-# ypred = bst.predict(xgb.DMatrix(test_data_process()), iteration_range=(0, bst.best_iteration + 1))
 
 # LOGISTIC REGRESSION MODEL
-lr_model = LogisticRegression(solver='liblinear', max_iter=200).fit(x_train, y_train)
-y_pred = lr_model.predict(x_test)
+def logistic_model():
+  lr_model = LogisticRegression(solver='liblinear', max_iter=200).fit(x_train, y_train)
+  y_pred = lr_model.predict(x_test)
 
-print(confusion_matrix(y_test, y_pred))
+  print(confusion_matrix(y_test, y_pred))
 
-
-# pd.DataFrame(model.predict_proba(test_data_process())).to_csv(r'solution.csv', index = False)
-# pd.DataFrame(pd.DataFrame(ypred).to_csv(r'solution.csv', index = False))
+  # pd.DataFrame(model.predict_proba(test_data_process())).to_csv(r'solution.csv', index = False)
 
 
