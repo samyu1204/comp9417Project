@@ -23,7 +23,7 @@ col_avg = [0.64833, 0.1517, 0.12663, 0.62104, 0.08019, 0.23053, 0.0586, 0.1279, 
 
 # Data getter functions:
 def get_sample_sub():
-  return dd.read_csv("../data/sample_submission.csv")
+  return pd.read_csv("../data/sample_submission.csv")
 
 def get_test_data():
   return pd.read_parquet("../data/test.parquet")
@@ -48,8 +48,9 @@ def get_merge_train_data():
     data[col].fillna(col_avg[i])
     i += 1
 
-  return data
+  return data.groupby(['customer_ID']).mean()
 
+  
 def get_column_avg():
   avg = ['hello']
   data = get_train_data()
@@ -69,8 +70,6 @@ def get_column_avg():
   
   print(avg)
   return
-
-
 # * ========================================================================================
 
 # * ========================================================================================
