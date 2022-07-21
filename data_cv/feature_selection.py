@@ -7,7 +7,7 @@ import df
 
 # Using Lasso Regression to perform feature selectio
 def select_features():
-  print(df.get_merge_train())
+  print(df.get_merge_train_data())
   
   return
 

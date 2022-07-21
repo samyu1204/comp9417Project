@@ -30,7 +30,7 @@ Y = df.get_train_label()['target'].to_numpy()
 # model = LogisticRegression(solver='liblinear', random_state=1).fit(X, Y)
 # print(model.predict_proba(test_data_process()))
 
-x_train, x_test, y_train, y_test = train_test_split(X, Y, random_state=23)
+x_train, x_test, y_train, y_test = train_test_split(X, Y, random_state=1)
 
 def XGBoost_model():
   dtrain = xgb.DMatrix(x_train, label=y_train)
