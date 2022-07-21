@@ -23,7 +23,6 @@ def data_preprocessing():
   # Group by customer_id and take the average of the columns:
   return data.groupby(['customer_ID']).mean()
 
-
 def test_data_process():
   data_frame = df.get_test_data()
   data = data_frame[cov_list]
@@ -61,7 +60,6 @@ def XGBoost_model():
 
 
 # LOGISTIC REGRESSION MODEL
-
 def logistic_model():
   lr_model = LogisticRegression(solver='liblinear', max_iter=200).fit(x_train, y_train)
   y_pred = lr_model.predict(x_test)
