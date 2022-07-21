@@ -50,6 +50,7 @@ def get_merge_train_data():
 
   return data.groupby(['customer_ID']).mean()
 
+  
 def get_column_avg():
   avg = ['hello']
   data = get_train_data()
