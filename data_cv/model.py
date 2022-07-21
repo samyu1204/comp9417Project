@@ -51,6 +51,7 @@ def XGBoost_model():
 
 XGBoost_model()
 
+
 # LOGISTIC REGRESSION MODEL
 def logistic_model():
   lr_model = LogisticRegression(solver='liblinear', max_iter=200).fit(x_train, y_train)
