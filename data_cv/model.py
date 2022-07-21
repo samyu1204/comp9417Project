@@ -18,7 +18,7 @@ def data_preprocessing():
   return data
 
 def test_data_process():
-  data_frame = df.get_test_data()
+  data_frame = df.get_test_data().groupby(['customer_ID']).mean()
   data = data_frame[cov_list]
   return data
 
