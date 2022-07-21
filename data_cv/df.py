@@ -46,9 +46,12 @@ def get_merge_train_data():
   i = 0
   for col in col_names:
     data[col].fillna(col_avg[i])
+    print(col_avg[i])
+    # print(data[col].isnull().values.any())
     i += 1
+  data = data.groupby(['customer_ID']).mean()
 
-  return data.groupby(['customer_ID']).mean()
+  return data
 
   
 def get_column_avg():
