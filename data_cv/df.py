@@ -5,6 +5,7 @@ import pyarrow.parquet as pq
 import datatable as dt
 import numpy as np
 
+
 # Documentations:https://docs.dask.org/en/stable/dataframe.html
 
 import pandas as pd
@@ -46,11 +47,12 @@ def get_merge_train_data():
   i = 0
   for col in col_names:
     data[col] = data[col].fillna(col_avg[i])
-    print(data[col].isnull().values.any())
     i += 1
   data = data.groupby(['customer_ID']).mean()
-
   return data
+
+def get_sample_train_data():
+  return pd.read_csv("../data/sample_train.csv")
 
   
 def get_column_avg():
@@ -73,6 +75,9 @@ def get_column_avg():
   print(avg)
   return
 # * ========================================================================================
+
+# get_merge_train_data().to_csv(r'sample_train.csv', index = False)
+
 
 # * ========================================================================================
 # .head(x) can display x number of rows in the dataframe
