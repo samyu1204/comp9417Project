@@ -37,9 +37,6 @@ def select_features():
   search = GridSearchCV(model, param, scoring='neg_mean_absolute_error', n_jobs=-1, cv=cv)
   result = search.fit(X, Y)
 
-  print('Best Score: %s' % result.best_score_)
-  print('Best Hyperparameters: %s' % result.best_params_)
-
 # Lasso algorithm for feature selection
 def lasso(alphas):
   data = df.get_sample_train_data()
@@ -86,8 +83,6 @@ def select_lasso():
     scoring = 'neg_mean_squared_error',
     verbose = 3
   )
-  print(search.fit(X_train, y_train))
-  print(search.best_params_)
 
 # Retrieves the important features: Looks at the returned list from lasso
 # And gets the most significant choice of alpha

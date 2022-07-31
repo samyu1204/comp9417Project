@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, KFold
 import cleaning_helper
 import df
 import pandas as pd
@@ -17,10 +17,8 @@ import matplotlib.pyplot as plt
 
 # * ========================================================================================
 # Lists for feature selections:
-# entire_list = ['customer_ID', 'D_58', 'B_37', 'B_9', 'D_74', 'B_3', 'D_55', 'B_22', 'B_33', 'R_1', 'B_38', 'D_75', 'D_44', 'D_48', 'B_2', 'B_7', 'B_18', 'B_30', 'B_1', 'D_61', 'B_4', 'P_2', 'R_10', 'B_17', 'B_23']
-
 # Based on correlation
-cov_list = ['B_30', 'B_1', 'B_23', 'B_7', 'D_55', 'B_37', 'B_3', 'D_58', 'D_61', 'B_4', 'B_22', 'D_44', 'D_75', 'R_1', 'B_9', 'B_38', 'D_48', 'R_10', 'D_74'] 
+print('Initialising all feature lists. Please wait...')
 corr_list = ['B_30', 'B_1', 'B_23', 'B_7', 'D_55', 'B_37', 'B_3', 'D_58', 'D_61', 'B_4', 'B_22', 'D_44', 'D_75', 'R_1', 'B_9', 'B_38', 'D_48', 'R_10', 'D_74'] 
 
 # Based on p-value logit selection
@@ -30,11 +28,22 @@ logit_list = feature_selection.logit_selection()
 # Based on lasso feature selection
 # cov_list = feature_selection.get_sig_list()
 lasso_list = feature_selection.get_sig_list()
+# This function is for selection of list:
+def welcome():
+  val = input('Please select a feature list by typing in a letter of the following: a) correlation b) logit c) lasso: ')
+  if val == 'a':
+    return corr_list
+  elif val == 'b':
+    return logit_list
+  else:
+    return lasso_list
+cov_list = welcome()
 
 # Training data preprocessing:
 def data_preprocessing():
+  print('Processing data...')
   data_frame = df.get_sample_train_data()
-  data = data_frame[corr_list]
+  data = data_frame[cov_list]
   return data
 
 def data_preprocessing_list(l):
@@ -44,6 +53,7 @@ def data_preprocessing_list(l):
 
 # Test data preprocessing:
 def test_data_process():
+  print('Processing test data...')
   data_frame = df.get_test_data().groupby(['customer_ID']).mean()
   data = data_frame[cov_list]
   return data
@@ -56,6 +66,7 @@ x_train, x_test, y_train, y_test = train_test_split(X, Y, random_state=1)
 
 # Handling the categorial
 def XGBoost_model():
+  print("Running the XGBoost Model...")
   dtrain = xgb.DMatrix(x_train, label=y_train)
   dtest = xgb.DMatrix(x_test, label=y_test)
 
@@ -69,43 +80,38 @@ def XGBoost_model():
   bst = xgb.train(param, dtrain, num_round, evallist)
 
   ypred = bst.predict(dtest, iteration_range=(0, bst.best_iteration + 1))
+  print(f'Predicted values: {ypred}')
   return ypred
-  # pd.DataFrame(pd.DataFrame(ypred).to_csv(r'solution.csv', index = False))
-  # print(confusion_matrix(y_test, ypred))
-  # print("Accuracy: %.3f" % accuracy_score(y_test, ypred))
+
 
 def XGBoost_model_classifier():
+  print("Running the XGBoost classifier Model...")
   model = XGBClassifier()
   model.fit(x_train, y_train)
   y_pred = model.predict(x_test)
 
-  print(confusion_matrix(y_test, y_pred))
+  print(f'The confusion matrix is: {confusion_matrix(y_test, y_pred)}')
   # roc 
   y_pred_proba = XGBoost_model()
   fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
   print("Accuracy: %.3f" % accuracy_score(y_test, y_pred))
-  # #create ROC curve
-  plt.plot(fpr,tpr)
-  plt.ylabel('True Positive Rate')
-  plt.xlabel('False Positive Rate')
-  plt.show()
 
-# XGBoost_model()
-# XGBoost_model_classifier()
 
 # * ========================================================================================
 # LOGISTIC REGRESSION MODEL
 def logistic_model():
+  print("Running the logistic model...")
   lr_model = LogisticRegression(solver='liblinear', max_iter=200).fit(x_train, y_train)
   y_pred = lr_model.predict(x_test)
 
-  print(confusion_matrix(y_test, y_pred))
-  print(y_pred)
+  print(f'The confusion matrix is: {confusion_matrix(y_test, y_pred)}')
   print("Accuracy: %.3f" % accuracy_score(y_test, y_pred))
+
 
 # * ========================================================================================
 # ROC plots:
 def ROC_curve_logistic_model():
+  print("Drawing the ROC curve...")
   # Data preprocessing ofr different lists:
   X_corr = data_preprocessing_list(corr_list)
   X_logit = data_preprocessing_list(logit_list)
@@ -140,7 +146,8 @@ def ROC_curve_logistic_model():
   return
 
 def ROC_curve_xgb_model():
-  # Data preprocessing ofr different lists:
+  print("Drawing the ROC curve...")
+  # Data preprocessing for different lists:
   X_corr = data_preprocessing_list(corr_list)
   X_logit = data_preprocessing_list(logit_list)
   X_lasso = data_preprocessing_list(lasso_list)
@@ -174,7 +181,8 @@ def ROC_curve_xgb_model():
   return
 
 def ROC_model_comparison():
-  # Data preprocessing ofr different lists:
+  print("Drawing the ROC curve...")
+  # Data preprocessing for different lists:
   X_logit = data_preprocessing_list(logit_list)
 
   Y = df.get_sample_train_data()['target'].to_numpy()
@@ -200,7 +208,21 @@ def ROC_model_comparison():
   plt.show()
   return
 
+# * ========================================================================================
+# To run the ROC models: uncomment one of these:
+
 # For writing results:
 # pd.DataFrame(model.predict_proba(test_data_process())).to_csv(r'solution.csv', index = False)
 
 
+# * ========================================================================================
+# Model running:
+# Comment models you want to run:
+# XGBoost_model()
+# XGBoost_model_classifier()
+# logistic_model()
+
+# Running ROC Curves:
+# ROC_curve_logistic_model()
+# ROC_curve_xgb_model()
+# ROC_model_comparison()
