@@ -16,8 +16,6 @@ def get_corr_df():
   data_frame = data_frame.groupby(['customer_ID']).mean()
   # Insert the default column:
   data_frame = data_frame.assign(default = df.get_train_label()['target'].tolist())
-  #print(data_frame.head())
-  #corr_df = data_frame.corr()
   for col in ['B_30', 'B_1', 'B_23', 'B_7', 'D_55', 'B_37', 'B_3', 'D_58', 'D_61', 'B_4', 'B_22', 'D_44', 'D_75', 'R_1', 'B_9', 'B_38', 'D_48', 'R_10', 'D_74']:
     sns.boxplot(y = data_frame[col], x = data_frame['default'], showfliers = False).set_title('Boxplot for ' + str(col) + ' grouped by default value')
     plt.show()
@@ -55,9 +53,9 @@ def correlation_of_selected_variables():
 # Correlation of each category against default
 def correlation_by_category():
     corr_df = pd.read_csv("generated_df/correlation_map.csv")
-    #corr_df.set_index('Unnamed: 0', inplace=True)
     corr_df['category'] = corr_df['Unnamed: 0'].str[0]
     corr_df = corr_df.groupby(by='category').mean()
     corr_df = corr_df['default']
     print(corr_df)
-correlation_by_category()
+
+corr_variables()
