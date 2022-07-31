@@ -14,10 +14,13 @@ import feature_selection
 from sklearn import metrics
 import matplotlib.pyplot as plt
 
-# cov_list = ['customer_ID', 'D_58', 'B_37', 'B_9', 'D_74', 'B_3', 'D_55', 'B_22', 'B_33', 'R_1', 'B_38', 'D_75', 'D_44', 'D_48', 'B_2', 'B_7', 'B_18', 'B_30', 'B_1', 'D_61', 'B_4', 'P_2', 'R_10', 'B_17', 'B_23']
+
+# * ========================================================================================
+# Lists for feature selections:
+# entire_list = ['customer_ID', 'D_58', 'B_37', 'B_9', 'D_74', 'B_3', 'D_55', 'B_22', 'B_33', 'R_1', 'B_38', 'D_75', 'D_44', 'D_48', 'B_2', 'B_7', 'B_18', 'B_30', 'B_1', 'D_61', 'B_4', 'P_2', 'R_10', 'B_17', 'B_23']
 
 # Based on correlation
-# cov_list = ['B_30', 'B_1', 'B_23', 'B_7', 'D_55', 'B_37', 'B_3', 'D_58', 'D_61', 'B_4', 'B_22', 'D_44', 'D_75', 'R_1', 'B_9', 'B_38', 'D_48', 'R_10', 'D_74'] 
+cov_list = ['B_30', 'B_1', 'B_23', 'B_7', 'D_55', 'B_37', 'B_3', 'D_58', 'D_61', 'B_4', 'B_22', 'D_44', 'D_75', 'R_1', 'B_9', 'B_38', 'D_48', 'R_10', 'D_74'] 
 corr_list = ['B_30', 'B_1', 'B_23', 'B_7', 'D_55', 'B_37', 'B_3', 'D_58', 'D_61', 'B_4', 'B_22', 'D_44', 'D_75', 'R_1', 'B_9', 'B_38', 'D_48', 'R_10', 'D_74'] 
 
 # Based on p-value logit selection
@@ -28,7 +31,7 @@ logit_list = feature_selection.logit_selection()
 # cov_list = feature_selection.get_sig_list()
 lasso_list = feature_selection.get_sig_list()
 
-
+# Training data preprocessing:
 def data_preprocessing():
   data_frame = df.get_sample_train_data()
   data = data_frame[corr_list]
@@ -39,19 +42,16 @@ def data_preprocessing_list(l):
   data = data_frame[l]
   return data
 
+# Test data preprocessing:
 def test_data_process():
   data_frame = df.get_test_data().groupby(['customer_ID']).mean()
   data = data_frame[cov_list]
   return data
 
+# Training and Test data sets:
 X = data_preprocessing()
-
 Y = df.get_sample_train_data()['target'].to_numpy()
-
-# # Using the training model to fit:
-# model = LogisticRegression(solver='liblinear', random_state=1).fit(X, Y)
-# print(model.predict_proba(test_data_process()))
-
+# Splitting:
 x_train, x_test, y_train, y_test = train_test_split(X, Y, random_state=1)
 
 # Handling the categorial
@@ -93,6 +93,7 @@ def XGBoost_model_classifier():
 # XGBoost_model()
 # XGBoost_model_classifier()
 
+# * ========================================================================================
 # LOGISTIC REGRESSION MODEL
 def logistic_model():
   lr_model = LogisticRegression(solver='liblinear', max_iter=200).fit(x_train, y_train)
@@ -102,15 +103,8 @@ def logistic_model():
   print(y_pred)
   print("Accuracy: %.3f" % accuracy_score(y_test, y_pred))
 
-  # roc 
-  # y_pred_proba = lr_model.predict_proba(x_test)[::,1]
-  # fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
-  # #create ROC curve
-  # plt.plot(fpr,tpr)
-  # plt.ylabel('True Positive Rate')
-  # plt.xlabel('False Positive Rate')
-  # plt.show()
-
+# * ========================================================================================
+# ROC plots:
 def ROC_curve_logistic_model():
   # Data preprocessing ofr different lists:
   X_corr = data_preprocessing_list(corr_list)
@@ -206,9 +200,7 @@ def ROC_model_comparison():
   plt.show()
   return
 
-ROC_model_comparison()
-
-
+# For writing results:
 # pd.DataFrame(model.predict_proba(test_data_process())).to_csv(r'solution.csv', index = False)
 
 

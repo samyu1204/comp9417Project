@@ -40,15 +40,7 @@ def select_features():
   print('Best Score: %s' % result.best_score_)
   print('Best Hyperparameters: %s' % result.best_params_)
 
-  #Fitting the model
-  # model.fit(X_train,y_train)
-  # y_pred = model.predict(X_test)
-  # print(y_pred)
-  # #Model Predictions
-  # print('='*30)
-  # print(r2_score(y_test,y_pred))
-  # print(model.coef_)
-
+# Lasso algorithm for feature selection
 def lasso(alphas):
   data = df.get_sample_train_data()
   X, y = data.drop('target',axis=1), data['target']
@@ -78,6 +70,7 @@ def lasso(alphas):
   # Return the dataframe    
   return frame
 
+# Lasso selection based on training set
 def select_lasso():
   pipeline = Pipeline([
     ('scaler', StandardScaler()),
@@ -85,7 +78,7 @@ def select_lasso():
   ])
   data = df.get_sample_train_data()
   X, y = data.drop('target',axis=1), data['target']
-  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+  X_train, _, y_train, _ = train_test_split(X, y, test_size=0.33, random_state=42)
 
   search = GridSearchCV(pipeline,
     {'model__alpha':np.arange(0.0001, 1, 0.01)},
@@ -96,14 +89,8 @@ def select_lasso():
   print(search.fit(X_train, y_train))
   print(search.best_params_)
 
-# select_lasso()
-
-# print(lasso([0.5, 0.1, 0.001, 0.0001]))
-
-# lasso([0.5, 0.1, 0.01, 0.001, 0.0001]).to_csv(r'solution.csv', index = False)
-# print(lasso([0.01])['Alpha = 0.010000'])
-
-# Retrieves the important features
+# Retrieves the important features: Looks at the returned list from lasso
+# And gets the most significant choice of alpha
 def get_sig_list():
   data = df.get_sample_train_data()
   col_names = list(data.columns)
@@ -123,7 +110,7 @@ def get_sig_list():
   
   return cov_list
 
-# select_features()
+# Logit p-value feature selection algorithm
 def logit_selection():
   data = df.get_sample_train_data()
   X, Y = data.drop('target',axis=1), data['target']
