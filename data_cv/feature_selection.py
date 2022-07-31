@@ -124,7 +124,6 @@ def get_sig_list():
   return cov_list
 
 # select_features()
-
 def logit_selection():
   data = df.get_sample_train_data()
   X, Y = data.drop('target',axis=1), data['target']
