@@ -57,5 +57,3 @@ def correlation_by_category():
     corr_df = corr_df.groupby(by='category').mean()
     corr_df = corr_df['default']
     print(corr_df)
-
-corr_variables()
